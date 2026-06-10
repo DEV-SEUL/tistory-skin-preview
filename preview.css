@@ -1,0 +1,49 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #eaf8ff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+}
+
+.preview-header {
+  height: 48px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-bottom: 1px solid #b8e8ff;
+  color: #26384a;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.preview-actions button {
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid #91dcff;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0078bf;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.preview-actions button.is-active {
+  background: #45bff4;
+  color: #ffffff;
+}
+
+#previewFrame {
+  display: block;
+  width: 100%;
+  height: calc(100vh - 48px);
+  border: 0;
+  background: #ffffff;
+}
