@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="ko" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[##_page_title_##]</title>
+  <meta property="og:title" content="[##_page_title_##]" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="[##_blog_link_##]" />
+
+  <!-- ══════════════════════════════════════════
+       NATSU CONFIG — 여기만 수정하세요
+       ══════════════════════════════════════════ -->
+  <script>
+  window.NATSU = {
+    /* 블로그 정보 */
+    blogTitle:        "ヒカリナツ",
+    blogSub:          "Hikari Natsu",
+    ownerName:        "SeRin",
+    ownerBio:         "anime · music · photos · diary",
+    statusMsg:        "Listening to Matsuri ♪",   /* 상태 메시지 */
+    commissionCredit: "illust by @credit",
+
+    /* 플레이어 */
+    audioSrc:    "./assets/audio/bgm.mp3",
+    nowPlaying:  "Fujii Kaze — Matsuri",
+    artist:      "Fujii Kaze",
+    albumArt:    "",                              /* 앨범아트 URL (비워두면 기본) */
+    playlistSub: "なつのうた",
+    autoPlay:    false,
+    loopPlay:    true,
+
+    /* 메인 이미지 슬라이드 (최대 5장, 빈 문자열 제거) */
+    slides: [
+      "./assets/images/main1.jpg",
+      "./assets/images/main2.jpg",
+      /* 슬라이드 추가 시 여기에 경로 입력 */
+    ],
+    slideInterval: 4000,                          /* 자동전환 ms */
+
+    /* D-DAY */
+    ddayLabel:  "D-DAY",
+    ddayStart:  "2024-08-01",                     /* YYYY-MM-DD */
+    ddayMode:   "dday",                           /* "dday" | "dplus" | "count" */
+
+    /* CURRENT 카드 */
+    currentReading:   "No Longer Human",
+    currentListening: "Matsuri — Fujii Kaze",
+    currentWatching:  "Dungeon Meshi",
+
+    /* 기타 */
+    cursorSrc:   "",                              /* 커스텀 커서 PNG */
+    bgEffect:    "firefly",                       /* none | firefly | sakura | snow | bubble */
+    bgIntensity: 40,
+    darkDefault: false,
+    footerText:  "ヒカリナツ — made with ♡",
+  };
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <div id="custom-cursor" aria-hidden="true"></div>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="테마 전환" title="라이트 / 다크 모드">
+    <span class="toggle-sun">☀</span>
+    <span class="toggle-moon">月</span>
+  </button>
+
+  <div class="skin-frame">
+
+    <!-- ── 윈도우 타이틀바 ── -->
+    <header class="window-bar">
+      <div class="traffic">
+        <span class="t-red"></span>
+        <span class="t-yellow"></span>
+        <span class="t-green"></span>
+      </div>
+      <p class="window-title">
+        <span class="nc" data-key="blogTitle">ヒカリナツ</span>
+        &ensp;—&ensp;
+        <span class="nc" data-key="blogSub">Hikari Natsu</span>
+      </p>
+      <div class="window-right"></div>
+    </header>
+
+    <!-- ── 상단 배너 ── -->
+    <section class="top-banner" role="banner">
+      <div class="banner-cicada" aria-hidden="true">semi</div>
+      <div class="banner-inner">
+        <h1 class="banner-title nc" data-key="blogTitle">ヒカリナツ</h1>
+        <p class="banner-sub nc" data-key="blogSub">Hikari Natsu</p>
+        <div class="banner-clouds" aria-hidden="true">
+          <span class="cloud c1"></span>
+          <span class="cloud c2"></span>
+          <span class="cloud c3"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════ 3단 그리드 ══════════════════ -->
+    <div class="home-grid">
+
+      <!-- ── 왼쪽 사이드바 ── -->
+      <aside class="left-panel" role="complementary" aria-label="프로필 및 메뉴">
+
+        <!-- 프로필 -->
+        <section class="card profile-card">
+          <div class="profile-avatar" aria-hidden="true">SR</div>
+          <strong class="profile-name nc" data-key="ownerName">SeRin</strong>
+          <p class="profile-status nc" data-key="statusMsg">Listening to Matsuri ♪</p>
+          <p class="profile-bio nc" data-key="ownerBio">anime · music · photos · diary</p>
+        </section>
+
+        <!-- 메뉴 -->
+        <section class="card menu-card" aria-label="탐색 메뉴">
+          <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="true">
+            MENU <span class="menu-toggle-indicator" aria-hidden="true">CLOSE</span>
+          </button>
+          <nav class="menu-list" id="menuList">
+            <a class="menu-link is-active" href="[##_blog_link_##]">HOME</a>
+            <a class="menu-link" href="[##_blog_link_##]category">ARCHIVE</a>
+            <a class="menu-link" href="[##_blog_link_##]tag">TAG</a>
+            <a class="menu-link" href="[##_guestbook_link_##]">GUESTBOOK</a>
+            <a class="menu-link" href="[##_blog_link_##]category/비밀글">SECRET</a>
+          </nav>
+        </section>
+
+        <!-- D-DAY 티켓 -->
+        <section class="card dday-card" aria-label="D-DAY">
+          <div class="ticket-side" aria-hidden="true"><span>TICKET</span></div>
+          <div class="ticket-main">
+            <div class="ticket-head">
+              <span class="nc" data-key="ddayLabel">D-DAY</span>
+              <i>NO. 001</i>
+            </div>
+            <div class="ticket-body">
+              <strong class="dday-num" id="ddayNum">D-0</strong>
+              <p class="dday-sub" id="ddaySub">since <span class="nc" data-key="ddayStart">2024-08-01</span></p>
+            </div>
+            <div class="ticket-foot">
+              <span>ADMIT ONE</span>
+              <span>SEAT 01</span>
+            </div>
+          </div>
+        </section>
+
+      </aside>
+
+      <!-- ── 메인 패널 ── -->
+      <main class="main-panel" id="main-content" role="main">
+
+        <!-- 메인 이미지 슬라이드 -->
+        <section class="main-visual card" aria-label="메인 이미지">
+          <div class="slider-wrap" id="sliderWrap">
+            <div class="slider-track" id="sliderTrack">
+              <!-- JS가 slides 배열로 동적 생성 -->
+            </div>
+            <div class="slider-placeholder" id="sliderPlaceholder" aria-hidden="true">
+              <span class="visual-kanji">夏</span>
+              <span class="visual-hint">assets/images/main1.jpg</span>
+            </div>
+            <button class="slider-btn slider-prev" id="sliderPrev" aria-label="이전 이미지" type="button">‹</button>
+            <button class="slider-btn slider-next" id="sliderNext" aria-label="다음 이미지" type="button">›</button>
+            <div class="slider-dots" id="sliderDots" aria-label="슬라이드 위치"></div>
+            <span class="main-credit nc" data-key="commissionCredit">illust by @credit</span>
+          </div>
+        </section>
+
+        <!-- 공지 -->
+        <s_notice>
+        <section class="card notice-card" aria-label="공지사항">
+          <h2 class="card-label">NOTICE</h2>
+          <div class="notice-body">[##_notice_rep_desc_##]</div>
+        </section>
+        </s_notice>
+
+        <!-- 글 목록 -->
+        <s_article_rep>
+        <article class="card post-card">
+          <div class="post-meta">
+            <span class="post-date">[##_article_rep_date_##]</span>
+            <span class="post-category">[##_article_rep_category_##]</span>
+            <s_article_rep_protected><span class="post-lock-badge" aria-label="보호글">LOCK</span></s_article_rep_protected>
+          </div>
+          <h2 class="post-title"><a href="[##_article_rep_link_##]">[##_article_rep_title_##]</a></h2>
+          <s_article_rep_protected>
+            <p class="post-desc post-desc--locked">이 글은 비밀번호로 보호되어 있습니다.</p>
+          </s_article_rep_protected>
+          <s_article_rep_public>
+            <p class="post-desc">[##_article_rep_desc_##]</p>
+          </s_article_rep_public>
+          <div class="post-footer">
+            <span class="post-count">♡ [##_article_rep_rp_cnt_##]</span>
+            <span class="post-count">[##_article_rep_comment_cnt_##] comments</span>
+          </div>
+        </article>
+        </s_article_rep>
+
+        <!-- 페이징 -->
+        <s_paging_rep>
+        <nav class="paging" aria-label="페이지 탐색">
+          <a class="page-btn" href="[##_prev_page_##]" aria-label="이전">‹</a>
+          [##_paging_rep_##]
+          <a class="page-btn" href="[##_next_page_##]" aria-label="다음">›</a>
+        </nav>
+        </s_paging_rep>
+
+        <!-- 글 본문 -->
+        <s_article>
+        <article class="card post-view" aria-label="글 본문">
+          <header class="post-view-header">
+            <div class="post-view-meta">
+              <span class="post-date">[##_article_date_##]</span>
+              <span class="post-category">[##_article_category_##]</span>
+            </div>
+            <h1 class="post-view-title">[##_article_title_##]</h1>
+            <div class="post-view-info">
+              <span class="pv-author">by <strong class="nc" data-key="ownerName">SeRin</strong></span>
+              <span class="pv-read-time" id="readTime"></span>
+            </div>
+          </header>
+          <div class="post-body" id="post-body">[##_article_content_##]</div>
+          <s_tag_rep>
+          <footer class="post-tags" aria-label="태그">
+            <span class="tag-label">TAG</span>
+            <a class="tag-item" href="[##_tag_link_##]">[##_tag_name_##]</a>
+          </footer>
+          </s_tag_rep>
+          <nav class="post-nav" aria-label="이전 다음 글">
+            <s_article_prev>
+            <a class="post-nav-btn post-nav-prev" href="[##_article_prev_link_##]">
+              <span class="nav-dir">‹ 이전 글</span>
+              <span class="nav-title">[##_article_prev_title_##]</span>
+            </a>
+            </s_article_prev>
+            <s_article_next>
+            <a class="post-nav-btn post-nav-next" href="[##_article_next_link_##]">
+              <span class="nav-dir">다음 글 ›</span>
+              <span class="nav-title">[##_article_next_title_##]</span>
+            </a>
+            </s_article_next>
+          </nav>
+          <s_rp_count>
+          <section class="comment-section" aria-label="댓글">
+            <h2 class="card-label">COMMENTS · [##_rp_count_##]</h2>
+            <s_rp_rep>
+            <div class="comment-item">
+              <div class="comment-meta">
+                <strong class="comment-author">[##_rp_name_##]</strong>
+                <span class="comment-date">[##_rp_date_##]</span>
+              </div>
+              <p class="comment-body">[##_rp_content_##]</p>
+            </div>
+            </s_rp_rep>
+            <s_rp_input>
+            <form class="comment-form" method="post" action="[##_rp_onclick_submit_##]" aria-label="댓글 작성">
+              <input class="comment-input" type="text" name="[##_rp_name_input_##]" placeholder="이름" aria-label="이름" />
+              <input class="comment-input comment-input--pw" type="password" name="[##_rp_password_input_##]" placeholder="비밀번호" aria-label="비밀번호" />
+              <textarea class="comment-textarea" name="[##_rp_content_input_##]" placeholder="댓글을 남겨주세요..." aria-label="댓글 내용" rows="3"></textarea>
+              <button class="comment-submit" type="submit">등록 →</button>
+            </form>
+            </s_rp_input>
+          </section>
+          </s_rp_count>
+        </article>
+        </s_article>
+
+        <!-- ══════════════════════════════════════════════════
+             보호글 비밀번호 입력 화면
+             • s_article_protected 는 문서 전체에 1회만 선언
+             • 티스토리 치환자를 임의값으로 절대 교체하지 말 것
+             ══════════════════════════════════════════════════ -->
+        <s_article_protected>
+        <div class="protected-wrap" aria-labelledby="protected-heading">
+          <div class="protected-card">
+
+            <div class="protected-lock" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.6"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
+              </svg>
+            </div>
+
+            <p class="protected-kanji" aria-hidden="true">秘密の記事</p>
+
+            <h1 class="protected-title" id="protected-heading">
+              [##_article_protected_title_##]
+            </h1>
+
+            <p class="protected-desc">
+              이 글은 작성자가 보호한 글입니다.<br />
+              비밀번호를 입력한 후 내용을 확인할 수 있습니다.
+            </p>
+
+            <div class="protected-form" role="form" aria-label="비밀번호 확인">
+              <label class="protected-label" for="protected-pw">비밀번호</label>
+              <div class="protected-input-row">
+                <input
+                  class="protected-input"
+                  id="protected-pw"
+                  type="password"
+                  name="[##_article_password_name_##]"
+                  placeholder="비밀번호를 입력하세요"
+                  aria-required="true"
+                  autocomplete="current-password"
+                />
+                <button
+                  class="protected-btn"
+                  type="button"
+                  data-submit="[##_article_password_onclick_submit_##]"
+                  aria-label="비밀번호 확인"
+                >확인</button>
+              </div>
+              <p class="protected-error" id="protected-error"
+                 role="alert" aria-live="assertive" hidden>
+                비밀번호가 올바르지 않습니다. 다시 확인해 주세요.
+              </p>
+            </div>
+
+            <a class="protected-back" href="javascript:history.back()" aria-label="이전 페이지로 돌아가기">← 돌아가기</a>
+
+          </div>
+        </div>
+        </s_article_protected>
+        <!-- /s_article_protected — 1회만 사용 -->
+
+      </main>
+
+      <!-- ── 오른쪽 사이드바 ── -->
+      <aside class="right-panel" role="complementary" aria-label="사이드바">
+
+        <!-- MP3 플레이어 -->
+        <section class="card playlist-card" aria-label="음악 플레이어">
+          <div class="real-mp3">
+            <div class="mp3-brand">NATSU-MP3</div>
+
+            <div class="mp3-display">
+              <div class="player-cover" aria-hidden="true"></div>
+              <div class="player-info">
+                <strong class="player-track natsu-config" data-key="nowPlaying">Fujii Kaze — Matsuri</strong>
+                <span class="player-sub natsu-config" data-key="playlistSub">なつのうた</span>
+              </div>
+            </div>
+
+            <audio id="bgm" preload="metadata" aria-hidden="true">
+              <source id="bgm-src" src="./assets/audio/bgm.mp3" type="audio/mpeg" />
+            </audio>
+
+            <div class="player-progress">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="mp3-time">
+              <span id="audioCurrent">0:00</span>
+              <span id="audioDuration">0:00</span>
+            </div>
+
+            <div class="mp3-pad">
+              <button class="ctrl-btn" id="audioBack" type="button">◁</button>
+              <button class="ctrl-btn ctrl-main" id="audioToggle" type="button">▶</button>
+              <button class="ctrl-btn" id="audioStop" type="button">■</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- CURRENT 카드 -->
+        <section class="card current-card" aria-label="현재 상태">
+          <h2 class="card-label">CURRENT</h2>
+          <dl class="current-list">
+            <div><dt>Reading</dt><dd>손혁의 투수 교과서</dd></div>
+            <div><dt>Listening</dt><dd>치고 달려라!</dd></div>
+            <div><dt>Watching</dt><dd>KBO</dd></div>
+          </dl>
+        </section>
+
+        <!-- 검색 -->
+        <section class="card search-card" aria-label="검색">
+          <h2 class="card-label">SEARCH</h2>
+          <s_search>
+          <div class="search-wrap">
+            <input class="search-input" type="text"
+              name="[##_search_name_##]" value="[##_search_text_##]"
+              placeholder="검색어를 입력하세요" aria-label="검색"
+              id="searchInput" />
+            <button class="search-btn" type="button"
+              id="searchBtn" aria-label="검색 실행" data-onclick="[##_search_onclick_submit_##]">→</button>
+          </div>
+          </s_search>
+        </section>
+
+        <!-- 최근 글 -->
+        <section class="card recent-card" aria-label="최근 글">
+          <h2 class="card-label">RECENT</h2>
+          <ul class="recent-list">
+            <s_recent_rep>
+            <li class="recent-item">
+              <a class="recent-link" href="[##_recent_rep_link_##]">[##_recent_rep_title_##]</a>
+            </li>
+            </s_recent_rep>
+          </ul>
+        </section>
+
+        <!-- 태그 -->
+        <section class="card tag-card" aria-label="태그">
+          <h2 class="card-label">TAG</h2>
+          <s_sidebar_element>
+          <div class="sidebar-content">[##_sidebar_content_##]</div>
+          </s_sidebar_element>
+        </section>
+
+        <p class="credit-line nc" data-key="footerText">ヒカリナツ — made with ♡</p>
+
+      </aside>
+    </div><!-- /.home-grid -->
+
+  </div><!-- /.skin-frame -->
+
+  <script src="./script.js" defer></script>
+</body>
+</html>
