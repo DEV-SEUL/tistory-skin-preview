@@ -1,0 +1,2216 @@
+/* ===================================================
+   NATSU SKIN v2.0 — 夏の記憶
+   Soft Sky Archive · Summer Memory
+   ─ 단일 정규화된 스타일시트 (중복 패치 제거) ─
+   =================================================== */
+
+/* ── 1. 디자인 토큰 ──────────────────────────────── */
+:root {
+  --sky:      #4fc3f7;
+  --sky-soft: #e1f5fe;
+  --sky-mid:  #81d4fa;
+  --sun:      #ffb74d;
+  --sun-soft: #fff8e1;
+  --cicada:   #26c6da;
+
+  --bg:         #f0f9ff;
+  --page:       #ffffff;
+  --card:       #ffffff;
+
+  --text:       #2e3c4c;
+  --text-sub:   #607d8b;
+  --text-muted: #90a4ae;
+  --title:      #0277bd;
+
+  --line:     rgba(79,195,247,.28);
+  --line-mid: rgba(79,195,247,.50);
+
+  --shadow-sm: 0 2px 8px  rgba(2,119,189,.08);
+  --shadow-md: 0 8px 24px rgba(2,119,189,.12);
+  --shadow-lg: 0 16px 40px rgba(2,119,189,.15);
+
+  --font-body: "Noto Sans KR","Apple SD Gothic Neo",system-ui,sans-serif;
+  --font-deco: "Zen Maru Gothic","Noto Sans KR",sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --ease: cubic-bezier(.25,.8,.25,1);
+}
+
+[data-theme="dark"] {
+  --bg:         #0d1b26;
+  --page:       #132030;
+  --card:       #1a2c3d;
+  --text:       #cfe8f5;
+  --text-sub:   #7fb8d4;
+  --text-muted: #4d7a96;
+  --title:      #4fc3f7;
+  --line:     rgba(79,195,247,.15);
+  --line-mid: rgba(79,195,247,.30);
+  --shadow-sm: 0 2px 8px  rgba(0,0,0,.30);
+  --shadow-md: 0 8px 24px rgba(0,0,0,.36);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,.42);
+  --sky-soft: rgba(79,195,247,.08);
+  --sun-soft: rgba(255,183,77,.08);
+}
+
+/* ── 2. 리셋 ─────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:13px;
+  line-height:1.7;
+  overflow-x:hidden;
+  transition:background .4s var(--ease),color .4s var(--ease);
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer}
+input,button,textarea{font-family:inherit}
+.footer{display:none!important}
+
+/* ── 3. 파티클 캔버스 ────────────────────────────── */
+#bg-canvas{
+  position:fixed;inset:0;
+  pointer-events:none;z-index:0;opacity:.55;
+}
+
+/* ── 4. 커스텀 커서 ──────────────────────────────── */
+#custom-cursor{
+  position:fixed;width:20px;height:20px;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);display:none;
+}
+body.has-cursor{cursor:none}
+
+/* ── 5. 다크모드 토글 ────────────────────────────── */
+.theme-toggle{
+  position:fixed;top:16px;right:16px;z-index:1000;
+  width:40px;height:40px;border-radius:50%;
+  border:1.5px solid var(--line-mid);
+  background:var(--card);color:var(--text-sub);
+  font-size:15px;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-sm);transition:all .3s var(--ease);
+}
+.theme-toggle:hover{background:var(--sky-soft);color:var(--sky)}
+.toggle-moon{display:none}
+[data-theme="dark"] .toggle-sun{display:none}
+[data-theme="dark"] .toggle-moon{display:inline}
+
+/* ── 6. 스킨 프레임 ──────────────────────────────── */
+.skin-frame{
+  position:relative;z-index:1;
+  width:min(1340px,calc(100vw - 32px));
+  max-height:min(860px,calc(100vh - 32px));
+  margin:16px auto;
+  background:var(--page);
+  border:1px solid var(--line-mid);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:background .4s var(--ease),border-color .4s var(--ease);
+}
+
+/* ── 7. 윈도우 타이틀바 ──────────────────────────── */
+.window-bar{
+  flex-shrink:0;
+  display:flex;align-items:center;
+  height:30px;padding:0 14px;
+  background:var(--sky-soft);
+  border-bottom:1px solid var(--line);
+}
+.traffic{display:flex;gap:6px;flex-shrink:0}
+.traffic span{width:10px;height:10px;border-radius:50%}
+.t-red{background:#ff5f57}.t-yellow{background:#ffbd2e}.t-green{background:#28c840}
+.window-title{
+  flex:1;text-align:center;
+  font-size:11px;font-weight:500;
+  color:var(--text-sub);letter-spacing:.04em;
+}
+.window-right{width:44px;flex-shrink:0}
+
+/* ── 8. 상단 배너 ────────────────────────────────── */
+.top-banner{
+  flex-shrink:0;position:relative;
+  height:168px;overflow:hidden;
+  background:linear-gradient(180deg,#bce9ff 0%,#e0f5ff 55%,#fffde7 100%);
+  display:flex;align-items:center;justify-content:center;
+}
+.top-banner::after{
+  content:"";position:absolute;
+  bottom:0;left:0;right:0;height:20px;
+  background:linear-gradient(180deg,transparent,rgba(102,187,106,.22));
+  border-top:1.5px solid rgba(102,187,106,.28);
+}
+.banner-cicada{
+  position:absolute;top:12px;right:18px;
+  font-size:9px;letter-spacing:.12em;
+  color:rgba(79,195,247,.4);
+  font-family:var(--font-deco);writing-mode:vertical-rl;
+}
+.banner-inner{text-align:center;position:relative;z-index:1}
+.banner-title{
+  font-family:var(--font-deco);font-size:34px;font-weight:700;
+  color:#0277bd;letter-spacing:.04em;line-height:1;
+  text-shadow:0 2px 10px rgba(2,119,189,.18);
+}
+.banner-sub{
+  margin-top:6px;font-size:11px;color:#4fc3f7;
+  letter-spacing:.14em;font-weight:500;
+}
+.banner-clouds{position:absolute;inset:0;pointer-events:none}
+.cloud{position:absolute;background:rgba(255,255,255,.82);border-radius:50px}
+.cloud::before,.cloud::after{content:"";position:absolute;background:inherit;border-radius:50%}
+.c1{width:68px;height:24px;top:24px;left:8%;animation:drift 14s ease-in-out infinite}
+.c1::before{width:34px;height:34px;top:-17px;left:9px}
+.c1::after{width:22px;height:22px;top:-11px;left:32px}
+.c2{width:90px;height:28px;top:48px;left:30%;animation:drift 18s ease-in-out infinite 3s}
+.c2::before{width:42px;height:42px;top:-21px;left:13px}
+.c2::after{width:30px;height:30px;top:-15px;left:48px}
+.c3{width:52px;height:18px;top:18px;right:14%;animation:drift 11s ease-in-out infinite 1.5s}
+.c3::before{width:26px;height:26px;top:-13px;left:7px}
+.c3::after{width:18px;height:18px;top:-9px;left:26px}
+@keyframes drift{0%,100%{transform:translateX(0)}50%{transform:translateX(12px)}}
+
+/* ── 9. 3단 그리드 ───────────────────────────────── */
+.home-grid{
+  flex:1;min-height:0;
+  display:grid;
+  grid-template-columns:210px minmax(0,1fr) 278px;
+  gap:14px;padding:14px;
+  overflow:hidden;
+}
+.left-panel,.right-panel{
+  display:flex;flex-direction:column;gap:10px;
+  overflow-y:auto;scrollbar-width:thin;
+  scrollbar-color:var(--sky-mid) transparent;
+}
+.left-panel::-webkit-scrollbar,
+.right-panel::-webkit-scrollbar{width:3px}
+.left-panel::-webkit-scrollbar-thumb,
+.right-panel::-webkit-scrollbar-thumb{background:var(--sky-mid);border-radius:2px}
+.main-panel{
+  display:flex;flex-direction:column;gap:12px;
+  overflow-y:auto;scrollbar-width:thin;
+  scrollbar-color:var(--sky-mid) transparent;
+}
+.main-panel::-webkit-scrollbar{width:3px}
+.main-panel::-webkit-scrollbar-thumb{background:var(--sky-mid);border-radius:2px}
+
+/* ── 10. 카드 공통 ───────────────────────────────── */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius-md);
+  padding:14px;
+  transition:background .3s var(--ease),border-color .3s var(--ease),box-shadow .25s var(--ease);
+  animation:fade-up .35s var(--ease) both;
+}
+.card:hover{border-color:var(--line-mid);box-shadow:var(--shadow-sm)}
+.card-label{
+  font-size:10px;font-weight:700;
+  letter-spacing:.1em;color:var(--sky);
+  margin-bottom:10px;text-transform:uppercase;
+}
+@keyframes fade-up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── 11. 프로필 카드 ─────────────────────────────── */
+.profile-card{text-align:center;padding:20px 14px 16px}
+.profile-avatar{
+  width:68px;height:68px;border-radius:50%;
+  background:linear-gradient(135deg,#4fc3f7,#81d4fa);
+  color:#fff;font-size:13px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 10px;
+  box-shadow:0 4px 14px rgba(79,195,247,.3);
+  font-family:var(--font-deco);
+}
+.profile-name{display:block;font-size:13px;font-weight:700;color:var(--title)}
+.profile-status{
+  display:block;margin-top:5px;
+  font-size:10px;color:var(--sky);letter-spacing:.04em;
+  font-family:var(--font-deco);
+}
+.profile-bio{margin-top:5px;font-size:10px;color:var(--text-muted);line-height:1.6}
+
+/* ── 12. 메뉴 카드 ───────────────────────────────── */
+.menu-card{padding:10px}
+.menu-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;height:28px;padding:0 2px;
+  border:0;background:transparent;
+  color:var(--sky);font-size:10px;font-weight:700;
+  letter-spacing:.12em;margin-bottom:6px;cursor:pointer;
+}
+.menu-toggle-indicator{
+  font-size:9px;color:var(--text-muted);letter-spacing:.06em;
+}
+.menu-card.is-collapsed .menu-toggle-indicator::before{content:"OPEN"}
+.menu-card:not(.is-collapsed) .menu-toggle-indicator::before{content:"CLOSE"}
+.menu-toggle-indicator{font-size:0} /* text hidden, use ::before */
+.menu-toggle-indicator::before{font-size:9px}
+.menu-list{
+  display:flex;flex-direction:column;gap:2px;
+  max-height:220px;overflow:hidden;
+  transition:max-height .25s ease,opacity .2s ease;
+  opacity:1;
+}
+.menu-card.is-collapsed .menu-list{max-height:0;opacity:0}
+.menu-link{
+  display:flex;align-items:center;
+  height:32px;padding:0 10px;
+  border-radius:var(--radius-sm);
+  font-size:11px;font-weight:600;
+  color:var(--text-sub);letter-spacing:.06em;
+  transition:all .2s var(--ease);
+}
+.menu-link:hover,.menu-link.is-active{
+  background:var(--sky-soft);color:var(--sky);
+  padding-left:14px;
+}
+
+/* ── 13. D-DAY 티켓 ──────────────────────────────── */
+.dday-card{
+  position:relative;
+  display:grid!important;
+  grid-template-columns:28px 1fr;
+  min-height:130px;padding:0!important;
+  overflow:hidden;
+  background:linear-gradient(135deg,var(--sky-soft) 0%,#fff 48%,var(--sun-soft) 100%);
+  border-color:var(--line-mid)!important;
+}
+/* 티켓 반달 구멍 */
+.dday-card::before,.dday-card::after{
+  content:"";position:absolute;top:50%;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--page);border:1px solid var(--line-mid);
+  transform:translateY(-50%);z-index:5;
+}
+.dday-card::before{left:-8px}
+.dday-card::after{right:-8px}
+/* 왼쪽 스텁 */
+.ticket-side{
+  display:grid;place-items:center;
+  border-right:1px dashed var(--line-mid);
+  background:rgba(255,255,255,.3);
+}
+.ticket-side span{
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  color:var(--sky);font-size:8px;font-weight:800;letter-spacing:.18em;
+}
+/* 티켓 본문 */
+.ticket-main{
+  display:grid;grid-template-rows:26px 1fr 22px;
+  position:relative;min-width:0;
+}
+.ticket-main::before,.ticket-main::after{
+  content:"";position:absolute;left:8px;right:8px;height:1px;
+  background-image:linear-gradient(90deg,var(--line-mid) 50%,transparent 50%);
+  background-size:7px 1px;opacity:.8;
+}
+.ticket-main::before{top:26px}
+.ticket-main::after{bottom:22px}
+.ticket-head,.ticket-foot{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 10px;color:var(--text-muted);
+  font-size:8px;font-weight:800;letter-spacing:.1em;
+}
+.ticket-head i{font-style:normal;color:var(--sky)}
+.ticket-body{
+  display:grid;place-items:center;
+  align-content:center;padding:6px 8px;
+  text-align:center;
+}
+.ticket-body .card-label{margin:0 0 2px!important;font-size:8px!important;letter-spacing:.14em!important}
+.dday-num{
+  display:block;
+  font-family:var(--font-deco);font-size:30px;font-weight:700;
+  color:var(--sun);line-height:1;
+  text-shadow:0 4px 12px rgba(255,183,77,.22);
+}
+.dday-sub{margin-top:4px;font-size:9px;color:var(--text-muted)}
+/* 도장 */
+.ticket-foot{position:relative}
+.ticket-foot::after{
+  content:"";position:absolute;
+  right:12px;bottom:24px;
+  width:30px;height:30px;
+  border:1px solid rgba(79,195,247,.2);
+  border-radius:50%;transform:rotate(-12deg);
+  pointer-events:none;
+}
+
+/* ── 14. 메인 이미지 슬라이드 ───────────────────── */
+.main-visual{
+  padding:0;overflow:hidden;
+  min-height:240px;position:relative;
+}
+.slider-wrap{
+  width:100%;height:100%;min-height:240px;
+  position:relative;overflow:hidden;
+}
+.slider-track{
+  display:flex;
+  transition:transform .45s var(--ease);
+  height:100%;
+}
+.slider-img{
+  flex-shrink:0;width:100%;
+  object-fit:cover;height:100%;min-height:240px;
+}
+/* 이미지 없을 때 placeholder */
+.slider-placeholder{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#c5e9ff 0%,#e8f7ff 60%,#fffde7 100%);
+  gap:8px;
+}
+.slider-track:not(:empty) ~ .slider-placeholder{display:none}
+.visual-kanji{font-family:var(--font-deco);font-size:48px;color:rgba(2,119,189,.2);line-height:1}
+.visual-hint{font-size:11px;color:rgba(2,119,189,.38);letter-spacing:.08em}
+/* 슬라이드 화살표 */
+.slider-btn{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.7);
+  background:rgba(255,255,255,.45);
+  color:var(--title);font-size:16px;
+  backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;opacity:0;
+}
+.slider-wrap:hover .slider-btn{opacity:1}
+.slider-btn:hover{background:rgba(255,255,255,.75)}
+.slider-prev{left:10px}
+.slider-next{right:10px}
+/* 슬라이드 닷 */
+.slider-dots{
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;
+}
+.slider-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.8);
+  cursor:pointer;transition:background .2s;
+}
+.slider-dot.active{background:#fff}
+/* 슬라이드 1장이면 버튼/닷 숨김 */
+.slider-wrap[data-count="1"] .slider-btn,
+.slider-wrap[data-count="1"] .slider-dots{display:none}
+/* 크레딧 */
+.main-credit{
+  position:absolute;right:12px;bottom:10px;
+  padding:3px 7px;border-radius:3px;
+  background:rgba(255,255,255,.7);
+  color:var(--text-muted);font-size:10px;
+  backdrop-filter:blur(4px);
+  pointer-events:none;
+}
+
+/* ── 15. 공지 ────────────────────────────────────── */
+.notice-card{border-left:3px solid var(--sun);background:var(--sun-soft)}
+.notice-body{font-size:12px;color:var(--text-sub);line-height:1.8}
+
+/* ── 16. 포스트 카드 ─────────────────────────────── */
+.post-card{transition:all .25s var(--ease)}
+.post-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--sky-mid)}
+.post-meta{display:flex;gap:10px;margin-bottom:8px;align-items:center}
+.post-date{font-size:10px;color:var(--text-muted)}
+.post-category{font-size:10px;color:var(--sky);font-weight:600}
+.post-lock-badge{
+  font-size:9px;font-weight:700;
+  padding:1px 5px;border-radius:3px;
+  background:var(--sky-soft);color:var(--sky);
+  border:1px solid var(--line-mid);
+}
+.post-title{font-size:15px;font-weight:700;line-height:1.4;margin-bottom:7px;color:var(--text)}
+.post-title a:hover{color:var(--sky)}
+.post-desc{
+  font-size:12px;color:var(--text-sub);line-height:1.8;
+  display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden;
+}
+.post-desc--locked{color:var(--text-muted);font-style:italic;font-size:12px}
+.post-footer{display:flex;gap:12px;margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
+.post-count{font-size:10px;color:var(--text-muted)}
+
+/* ── 17. 페이징 ──────────────────────────────────── */
+.paging{display:flex;justify-content:center;gap:6px;padding:8px 0}
+.page-btn{
+  display:flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:var(--radius-sm);
+  border:1px solid var(--line-mid);font-size:13px;color:var(--text-sub);
+  transition:all .2s;
+}
+.page-btn:hover,.page-btn.on{background:var(--sky);color:#fff;border-color:var(--sky)}
+
+/* ── 18. MP3 플레이어 ────────────────────────────── */
+.playlist-card{padding:0}
+.mp3-shell{
+  display:flex;flex-direction:column;gap:0;
+  border-radius:var(--radius-md);
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 90% 6%,rgba(255,183,77,.16),transparent 30%),
+    var(--card);
+}
+.mp3-topline{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 6px;
+  font-size:9px;font-weight:800;letter-spacing:.14em;
+  color:var(--sky);
+}
+.mp3-loop-badge{
+  font-size:14px;color:var(--text-muted);cursor:pointer;
+  transition:color .2s;line-height:1;
+}
+.mp3-loop-badge.active{color:var(--sky)}
+.mp3-screen{
+  display:grid;grid-template-columns:58px 1fr;
+  gap:10px;align-items:center;
+  padding:0 14px 10px;
+}
+.player-cover{
+  width:58px;height:58px;border-radius:var(--radius-sm);
+  background:
+    radial-gradient(circle at center,rgba(255,255,255,.6) 0 18%,transparent 19%),
+    linear-gradient(135deg,var(--sky-soft),#fff);
+  border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 16px rgba(2,119,189,.1);
+  overflow:hidden;flex-shrink:0;
+}
+.player-cover img{width:100%;height:100%;object-fit:cover}
+.player-info{min-width:0}
+.player-track{
+  display:block;font-size:11px;font-weight:700;
+  color:var(--text);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+}
+.player-artist{
+  display:block;font-size:10px;color:var(--text-sub);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.player-sub{
+  display:block;font-size:10px;color:var(--text-muted);
+  font-family:var(--font-deco);margin-top:2px;
+}
+/* 프로그레스바 + 클릭 seek */
+.player-progress-wrap{padding:0 14px}
+.player-progress{
+  height:4px;border-radius:2px;
+  background:var(--sky-soft);overflow:hidden;
+  cursor:pointer;margin-bottom:4px;
+}
+.progress-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--sky),var(--cicada));
+  border-radius:2px;transition:width .25s linear;
+}
+.mp3-time{
+  display:flex;justify-content:space-between;
+  padding:0 14px 8px;
+  font-size:9px;color:var(--text-muted);
+}
+.player-controls{
+  display:flex;align-items:center;justify-content:center;
+  gap:6px;padding:0 14px 8px;
+}
+.ctrl-btn{
+  border:1px solid var(--line-mid);border-radius:var(--radius-sm);
+  background:var(--card);color:var(--sky);
+  font-size:10px;transition:all .2s;
+}
+.ctrl-btn:hover{background:var(--sky-soft)}
+.ctrl-main{width:36px;height:30px;font-size:13px}
+.ctrl-small{width:28px;height:28px}
+.mp3-vol-row{
+  display:flex;align-items:center;gap:8px;
+  padding:0 14px 12px;
+}
+.mp3-vol-icon{font-size:11px;color:var(--text-muted);flex-shrink:0}
+.vol-slider{
+  flex:1;height:3px;-webkit-appearance:none;appearance:none;
+  background:var(--sky-soft);border-radius:2px;outline:none;cursor:pointer;
+}
+.vol-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:12px;height:12px;
+  border-radius:50%;background:var(--sky);cursor:pointer;
+}
+
+/* ── 19. CURRENT 카드 ────────────────────────────── */
+.current-list{display:flex;flex-direction:column;gap:8px}
+.current-item{
+  display:flex;align-items:baseline;gap:8px;
+  padding-bottom:7px;border-bottom:1px solid var(--line);
+}
+.current-item:last-child{border-bottom:none;padding-bottom:0}
+.current-type{
+  flex-shrink:0;font-size:9px;font-weight:700;
+  letter-spacing:.1em;color:var(--sky);min-width:52px;
+}
+.current-val{font-size:11px;color:var(--text-sub);line-height:1.4}
+
+/* ── 20. 검색 카드 ───────────────────────────────── */
+.search-wrap{display:flex;gap:6px}
+.search-input{
+  flex:1;height:32px;padding:0 10px;
+  border:1px solid var(--line-mid);border-radius:var(--radius-sm);
+  background:var(--card);color:var(--text);
+  font-size:11px;outline:none;transition:border-color .2s;
+}
+.search-input:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(79,195,247,.14)}
+.search-input::placeholder{color:var(--text-muted)}
+.search-btn{
+  width:32px;height:32px;
+  border:none;border-radius:var(--radius-sm);
+  background:var(--sky);color:#fff;font-size:14px;
+  transition:opacity .2s;
+}
+.search-btn:hover{opacity:.85}
+
+/* ── 21. 최근 글 ─────────────────────────────────── */
+.recent-list{display:flex;flex-direction:column;gap:0}
+.recent-item{border-bottom:1px solid var(--line);padding:6px 0}
+.recent-item:last-child{border-bottom:none}
+.recent-link{
+  font-size:11px;color:var(--text-sub);
+  display:block;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+  transition:color .2s;
+}
+.recent-link:hover{color:var(--sky)}
+
+/* ── 22. 태그 / 사이드바 ─────────────────────────── */
+.sidebar-content{font-size:11px;color:var(--text-sub);line-height:2}
+.credit-line{
+  font-size:10px;color:var(--text-muted);
+  text-align:center;letter-spacing:.06em;
+  padding:4px 0 2px;font-family:var(--font-deco);
+}
+
+/* ── 23. 글 본문 ─────────────────────────────────── */
+.post-view{}
+.post-view-header{margin-bottom:20px}
+.post-view-meta{display:flex;gap:10px;margin-bottom:8px}
+.post-view-title{font-size:20px;font-weight:700;line-height:1.4;color:var(--text)}
+.post-view-info{
+  display:flex;align-items:center;gap:14px;
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+  font-size:11px;color:var(--text-muted);
+}
+.pv-read-time::before{content:"📖 "}
+.post-body{font-size:17px;line-height:1.95;color:var(--text)}
+.post-body h2,.post-body h3{font-family:var(--font-deco);color:var(--title);margin:1.8em 0 .6em;font-weight:700}
+.post-body h2{font-size:20px}.post-body h3{font-size:17px}
+.post-body p{margin:0 0 1em}
+.post-body blockquote{
+  margin:1.4em 0;padding:12px 18px;
+  border-left:3px solid var(--sky);
+  background:var(--sky-soft);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  color:var(--text-sub);font-style:italic;
+}
+.post-body pre{
+  background:#1a2c3d;color:#e0f0ff;
+  border-radius:var(--radius-md);padding:16px;
+  overflow-x:auto;font-size:13px;line-height:1.6;
+  margin:1.2em 0;position:relative;
+}
+.post-body code{
+  background:var(--sky-soft);color:var(--cicada);
+  padding:2px 6px;border-radius:3px;font-size:.9em;
+}
+.post-body pre code{background:none;color:inherit;padding:0}
+.post-body table{width:100%;border-collapse:collapse;margin:1.2em 0;font-size:14px}
+.post-body th,.post-body td{padding:10px 14px;border:1px solid var(--line-mid);text-align:left}
+.post-body th{background:var(--sky-soft);font-weight:700;color:var(--title)}
+.post-body tr:hover td{background:var(--sky-soft)}
+.post-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)}
+.tag-label{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:.08em}
+.tag-item{
+  font-size:10px;padding:2px 8px;border-radius:99px;
+  background:var(--sky-soft);color:var(--sky);
+  border:1px solid var(--line);transition:background .2s;
+}
+.tag-item:hover{background:var(--sky);color:#fff}
+.post-nav{display:flex;gap:10px;margin-top:16px}
+.post-nav-btn{
+  flex:1;padding:10px 14px;
+  border:1px solid var(--line);border-radius:var(--radius-md);
+  background:var(--card);transition:all .2s;
+}
+.post-nav-btn:hover{border-color:var(--sky-mid);background:var(--sky-soft)}
+.nav-dir{display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;letter-spacing:.06em}
+.nav-title{display:block;font-size:12px;font-weight:600;color:var(--text)}
+.post-nav-next{text-align:right}
+
+/* ── 24. 댓글 ────────────────────────────────────── */
+.comment-section{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.comment-item{padding:10px 0;border-bottom:1px solid var(--line)}
+.comment-item:last-of-type{border-bottom:none}
+.comment-meta{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.comment-author{font-size:12px;font-weight:700;color:var(--text)}
+.comment-date{font-size:10px;color:var(--text-muted)}
+.comment-body{font-size:13px;color:var(--text-sub);line-height:1.7}
+.comment-form{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.comment-input,.comment-textarea{
+  padding:8px 12px;border:1px solid var(--line-mid);
+  border-radius:var(--radius-sm);background:var(--card);
+  color:var(--text);font-size:12px;outline:none;
+  transition:border-color .2s;
+}
+.comment-input:focus,.comment-textarea:focus{border-color:var(--sky)}
+.comment-input--pw{width:50%}
+.comment-textarea{resize:vertical;min-height:80px;line-height:1.6}
+.comment-submit{
+  align-self:flex-end;padding:8px 18px;
+  border:none;border-radius:var(--radius-sm);
+  background:var(--sky);color:#fff;
+  font-size:12px;font-weight:700;transition:opacity .2s;
+}
+.comment-submit:hover{opacity:.85}
+
+/* ── 25. 보호글 ──────────────────────────────────── */
+.protected-wrap{
+  display:flex;align-items:center;justify-content:center;
+  padding:8px 0 12px;
+}
+.protected-card{
+  width:100%;max-width:440px;
+  background:var(--card);border:1px solid var(--line-mid);
+  border-radius:var(--radius-lg);
+  padding:28px 28px 22px;text-align:center;
+  box-shadow:var(--shadow-md);
+  transition:background .35s var(--ease),border-color .35s var(--ease);
+  animation:protected-in .4s var(--ease) both;
+}
+@keyframes protected-in{
+  from{opacity:0;transform:translateY(14px) scale(.98)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.protected-lock{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,var(--sky-soft),#e0f7fa);
+  color:var(--sky);margin-bottom:12px;
+  animation:lock-sway 3.6s ease-in-out infinite .6s;
+}
+@keyframes lock-sway{
+  0%,100%{transform:rotate(0)}
+  20%{transform:rotate(-5deg)}
+  40%{transform:rotate(4deg)}
+  60%{transform:rotate(-2deg)}
+  80%{transform:rotate(1deg)}
+}
+.protected-kanji{
+  font-family:var(--font-deco);font-size:10px;font-weight:700;
+  letter-spacing:.16em;color:var(--text-muted);margin-bottom:9px;
+}
+.protected-title{
+  font-size:17px;font-weight:700;color:var(--text);
+  line-height:1.45;margin-bottom:10px;
+  word-break:keep-all;overflow-wrap:break-word;
+}
+.protected-desc{font-size:12px;color:var(--text-sub);line-height:1.85;margin-bottom:22px}
+.protected-form{display:flex;flex-direction:column;gap:10px;text-align:left}
+.protected-label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--sky);margin-bottom:2px}
+.protected-input-row{display:flex;gap:8px}
+.protected-input{
+  flex:1;height:40px;padding:0 14px;
+  border:1.5px solid var(--line-mid);border-radius:var(--radius-md);
+  background:var(--card);color:var(--text);
+  font-size:13px;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.protected-input:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(79,195,247,.16)}
+.protected-input::placeholder{color:var(--text-muted);font-size:12px}
+.protected-btn{
+  flex-shrink:0;height:40px;padding:0 18px;
+  border:none;border-radius:var(--radius-md);
+  background:linear-gradient(135deg,#4fc3f7,#26c6da);
+  color:#fff;font-size:13px;font-weight:700;letter-spacing:.04em;
+  box-shadow:0 4px 14px rgba(79,195,247,.3);
+  transition:opacity .2s,transform .15s;
+}
+.protected-btn:hover{opacity:.88}
+.protected-btn:active{transform:scale(.97)}
+/* shake 애니메이션 */
+@keyframes pw-shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-6px)}
+  40%{transform:translateX(6px)}
+  60%{transform:translateX(-4px)}
+  80%{transform:translateX(4px)}
+}
+.protected-input.shake{animation:pw-shake .4s ease}
+.protected-error{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:var(--radius-sm);
+  background:rgba(226,75,74,.08);
+  border:1px solid rgba(226,75,74,.22);
+  color:#c62828;font-size:12px;font-weight:500;line-height:1.5;
+  animation:error-in .3s var(--ease);
+}
+[data-theme="dark"] .protected-error{
+  background:rgba(226,75,74,.12);border-color:rgba(226,75,74,.3);color:#ef9a9a;
+}
+@keyframes error-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.protected-error[hidden]{display:none!important}
+.protected-back{
+  display:inline-block;margin-top:18px;
+  font-size:12px;color:var(--text-muted);
+  transition:color .2s;letter-spacing:.04em;
+}
+.protected-back:hover{color:var(--sky)}
+[data-theme="dark"] .protected-lock{
+  background:linear-gradient(135deg,rgba(79,195,247,.12),rgba(38,198,218,.1));
+}
+
+/* ── 26. 애니메이션 / 반응형 ─────────────────────── */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+@media (max-width:1100px){
+  .home-grid{grid-template-columns:200px minmax(0,1fr) 255px}
+}
+@media (max-width:880px){
+  .skin-frame{max-height:none;border-radius:var(--radius-md)}
+  .home-grid{grid-template-columns:1fr;overflow:visible;max-height:none}
+  .left-panel,.right-panel,.main-panel{overflow:visible}
+  .top-banner{height:130px}
+  .banner-title{font-size:26px}
+  .slider-btn{opacity:1}
+}
+@media (max-width:560px){
+  .skin-frame{margin:0;border-radius:0;width:100vw}
+  .home-grid{padding:10px;gap:10px}
+  .banner-title{font-size:22px}
+  .protected-input-row{flex-direction:column}
+  .protected-input,.protected-btn{width:100%;height:44px}
+}
+
+
+/* ===================================================
+   Hide protected password section on home/list pages
+   =================================================== */
+
+/* 기본값: 보호글 입력 UI 숨김 */
+.protected-wrap,
+.secret-page {
+  display: none !important;
+}
+
+/* JS가 실제 보호글 페이지라고 판단한 경우에만 표시 */
+body.is-protected-page .protected-wrap {
+  display: flex !important;
+}
+
+body.is-protected-page .secret-page {
+  display: grid !important;
+}
+
+/* 홈/목록에서는 보호글 섹션 때문에 생기는 여백 제거 */
+body:not(.is-protected-page) .protected-card,
+body:not(.is-protected-page) .secret-modal {
+  display: none !important;
+}
+
+
+/* ===================================================
+   Hide article detail section on home/list pages
+   =================================================== */
+
+/* 기본값: 상세글 영역 숨김 */
+.post-view {
+  display: none !important;
+}
+
+/* 실제 글 상세 페이지에서만 표시 */
+body.is-article-page .post-view {
+  display: block !important;
+}
+
+/* 홈/목록에서는 상세글 관련 여백 제거 */
+body:not(.is-article-page) .post-view,
+body:not(.is-article-page) .post-view-header,
+body:not(.is-article-page) .post-body,
+body:not(.is-article-page) .post-tags,
+body:not(.is-article-page) .post-nav,
+body:not(.is-article-page) .comment-section {
+  display: none !important;
+}
+
+
+/* ===================================================
+   Layout fit + CURRENT text patch
+   =================================================== */
+
+/* 전체가 화면 안에서 덜 잘리게 */
+.skin-frame {
+  width: min(1320px, calc(100vw - 20px)) !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  margin: 8px auto !important;
+  overflow: hidden !important;
+}
+
+.top-banner {
+  height: 150px !important;
+}
+
+.home-grid {
+  grid-template-columns: 210px minmax(0, 1fr) 270px !important;
+  gap: 12px !important;
+  padding: 10px !important;
+  overflow: visible !important;
+}
+
+.left-panel,
+.right-panel,
+.main-panel {
+  gap: 10px !important;
+  overflow: visible !important;
+}
+
+/* 메인 이미지 너무 커서 잘리는 문제 조정 */
+.main-visual {
+  min-height: 220px !important;
+}
+
+.main-visual-inner {
+  min-height: 220px !important;
+}
+
+.main-image {
+  height: 220px !important;
+  min-height: 220px !important;
+}
+
+/* 카드 여백 축소 */
+.card {
+  padding: 12px !important;
+}
+
+.profile-card {
+  padding: 16px 12px 14px !important;
+}
+
+.profile-avatar {
+  width: 64px !important;
+  height: 64px !important;
+}
+
+.menu-link {
+  height: 31px !important;
+}
+
+.dday-card {
+  min-height: 112px !important;
+}
+
+.ticket-main {
+  grid-template-rows: 24px 1fr 20px !important;
+}
+
+.ticket-main::before {
+  top: 24px !important;
+}
+
+.ticket-main::after {
+  bottom: 20px !important;
+}
+
+.dday-num {
+  font-size: 28px !important;
+}
+
+/* 플레이어 높이 축소 */
+.playlist-card {
+  padding: 10px !important;
+}
+
+.mp3-shell {
+  padding: 10px !important;
+}
+
+.mp3-screen {
+  grid-template-columns: 58px 1fr !important;
+  min-height: 68px !important;
+  padding: 8px !important;
+}
+
+.player-cover {
+  width: 58px !important;
+  height: 58px !important;
+}
+
+.player-controls {
+  gap: 6px !important;
+}
+
+.ctrl-btn {
+  height: 26px !important;
+}
+
+/* CURRENT 카드 문구 정리 */
+.current-list {
+  display: grid;
+  gap: 8px;
+}
+
+.current-list div {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 8px;
+  align-items: center;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--line);
+}
+
+.current-list div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.current-list dt {
+  color: var(--sky);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.current-list dd {
+  margin: 0;
+  color: var(--text-sub);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+/* 우측 카드들 너무 길어지지 않게 */
+.search-card,
+.recent-card,
+.current-card {
+  padding: 12px !important;
+}
+
+.recent-card {
+  max-height: 88px;
+  overflow: hidden;
+}
+
+@media (max-width: 1180px) {
+  .home-grid {
+    grid-template-columns: 190px minmax(0, 1fr) 250px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .home-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* ===================================================
+   100% viewport fit patch
+   - 화면 100%에서도 잘리지 않게
+   - 전체 프레임은 뷰포트 안에 고정
+   - 가운데/좌우 패널만 내부 스크롤
+   =================================================== */
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden !important;
+}
+
+/* 전체 스킨을 화면 안에 맞춤 */
+.skin-frame {
+  width: calc(100vw - 20px) !important;
+  height: calc(100vh - 20px) !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  margin: 10px auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+/* 상단은 고정 높이 */
+.window-bar {
+  flex: 0 0 32px !important;
+}
+
+.top-banner {
+  flex: 0 0 132px !important;
+  height: 132px !important;
+}
+
+/* 본문은 남은 공간만 사용 */
+.home-grid {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  display: grid !important;
+  grid-template-columns: 210px minmax(0, 1fr) 270px !important;
+  gap: 10px !important;
+  padding: 10px !important;
+  overflow: hidden !important;
+}
+
+/* 각 컬럼 내부 스크롤 */
+.left-panel,
+.main-panel,
+.right-panel {
+  min-height: 0 !important;
+  max-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin;
+}
+
+/* 스크롤바 얇게 */
+.left-panel::-webkit-scrollbar,
+.main-panel::-webkit-scrollbar,
+.right-panel::-webkit-scrollbar {
+  width: 5px;
+}
+
+.left-panel::-webkit-scrollbar-thumb,
+.main-panel::-webkit-scrollbar-thumb,
+.right-panel::-webkit-scrollbar-thumb {
+  background: var(--sky-mid);
+  border-radius: 999px;
+}
+
+/* 카드 여백 압축 */
+.card {
+  padding: 10px !important;
+}
+
+.profile-card {
+  min-height: 0 !important;
+  padding: 14px 10px 12px !important;
+}
+
+.profile-avatar {
+  width: 58px !important;
+  height: 58px !important;
+  margin-bottom: 8px !important;
+}
+
+.profile-name {
+  font-size: 12px !important;
+}
+
+.profile-bio {
+  margin-top: 4px !important;
+  font-size: 9.5px !important;
+}
+
+/* 메뉴 압축 */
+.menu-card {
+  padding: 8px !important;
+}
+
+.menu-toggle {
+  height: 24px !important;
+  margin-bottom: 4px !important;
+}
+
+.menu-link {
+  height: 28px !important;
+  font-size: 10px !important;
+}
+
+/* D-DAY 티켓 압축 */
+.dday-card {
+  min-height: 104px !important;
+}
+
+.ticket-main {
+  grid-template-rows: 22px 1fr 18px !important;
+}
+
+.ticket-main::before {
+  top: 22px !important;
+}
+
+.ticket-main::after {
+  bottom: 18px !important;
+}
+
+.ticket-head,
+.ticket-foot {
+  font-size: 7.5px !important;
+}
+
+.ticket-body .dday-num,
+.dday-num {
+  font-size: 26px !important;
+}
+
+.ticket-body .dday-sub,
+.dday-sub {
+  font-size: 9px !important;
+}
+
+/* 메인 이미지 높이: 뷰포트에 따라 자동 축소 */
+.main-visual {
+  min-height: clamp(180px, 33vh, 260px) !important;
+  height: auto !important;
+}
+
+.main-visual-inner,
+.visual-placeholder,
+.main-image {
+  min-height: clamp(180px, 33vh, 260px) !important;
+  height: clamp(180px, 33vh, 260px) !important;
+}
+
+/* 공지/글목록 높이 압축 */
+.notice-card {
+  min-height: 0 !important;
+}
+
+.notice-body {
+  line-height: 1.55 !important;
+}
+
+.post-card {
+  padding: 12px !important;
+}
+
+.post-title {
+  font-size: 15px !important;
+  margin-bottom: 6px !important;
+}
+
+.post-desc {
+  line-height: 1.5 !important;
+  -webkit-line-clamp: 1 !important;
+}
+
+.post-footer {
+  margin-top: 6px !important;
+  padding-top: 6px !important;
+}
+
+/* 우측 플레이어 압축 */
+.playlist-card {
+  padding: 8px !important;
+}
+
+.mp3-shell {
+  padding: 8px !important;
+}
+
+.mp3-topline {
+  margin-bottom: 6px !important;
+}
+
+.mp3-screen {
+  grid-template-columns: 50px 1fr !important;
+  min-height: 58px !important;
+  padding: 6px !important;
+}
+
+.player-cover {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.player-track {
+  font-size: 11px !important;
+}
+
+.player-sub {
+  font-size: 9.5px !important;
+}
+
+.player-progress {
+  margin: 8px 0 4px !important;
+}
+
+.mp3-time {
+  margin-bottom: 6px !important;
+}
+
+.ctrl-btn {
+  width: 30px !important;
+  height: 24px !important;
+  font-size: 10px !important;
+}
+
+.ctrl-main {
+  width: 36px !important;
+  height: 28px !important;
+}
+
+/* 우측 카드 압축 */
+.current-card,
+.search-card,
+.recent-card,
+.memo-card {
+  padding: 10px !important;
+}
+
+.current-list {
+  gap: 5px !important;
+}
+
+.current-list div {
+  padding-bottom: 5px !important;
+}
+
+.search-input {
+  height: 28px !important;
+}
+
+.search-btn {
+  height: 28px !important;
+}
+
+.recent-card {
+  max-height: 72px !important;
+}
+
+/* 폭 좁을 때 */
+@media (max-width: 1180px) {
+  .home-grid {
+    grid-template-columns: 190px minmax(0, 1fr) 245px !important;
+  }
+}
+
+@media (max-width: 960px) {
+  html,
+  body {
+    overflow: auto !important;
+    height: auto !important;
+  }
+
+  .skin-frame {
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+
+  .home-grid {
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+  }
+
+  .left-panel,
+  .main-panel,
+  .right-panel {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+}
+
+
+/* ===================================================
+   Header title fix
+   - 구름 제거
+   - 제목 잘림 방지
+   =================================================== */
+
+.banner-clouds,
+.cloud,
+.c1,
+.c2,
+.c3 {
+  display: none !important;
+}
+
+.banner-title {
+  line-height: 1.25 !important;
+  padding: 0 0 4px !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+
+.banner-sub {
+  margin-top: 4px !important;
+  font-size: 11px !important;
+  letter-spacing: 0.12em !important;
+}
+
+.banner-inner {
+  display: grid !important;
+  place-items: center !important;
+  gap: 2px !important;
+}
+
+
+/* ===================================================
+   Main clean + larger image + real MP3 design
+   컬러 팔레트 유지
+   =================================================== */
+
+/* 메인에서 공지/글목록 제거 */
+.notice-card,
+.post-card {
+  display: none !important;
+}
+
+/* 메인 이미지 박스 확대 */
+.main-visual {
+  min-height: clamp(360px, 58vh, 560px) !important;
+}
+
+.main-visual-inner,
+.visual-placeholder,
+.main-image {
+  min-height: clamp(360px, 58vh, 560px) !important;
+  height: clamp(360px, 58vh, 560px) !important;
+}
+
+/* 플레이어: 실제 MP3 기기 느낌 */
+.playlist-card {
+  padding: 0 !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.real-mp3 {
+  position: relative;
+  padding: 14px;
+  border: 1px solid var(--line-mid);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 82% 12%, rgba(255,255,255,.78), transparent 22%),
+    linear-gradient(145deg, #ffffff 0%, var(--sky-soft) 100%);
+}
+
+.mp3-brand {
+  margin-bottom: 10px;
+  color: var(--sky);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+
+.mp3-display {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.44));
+  box-shadow: inset 0 1px 12px rgba(79,195,247,.08);
+}
+
+.player-cover {
+  position: relative;
+  width: 68px !important;
+  height: 68px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--line-mid) !important;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.75) 0 13%, transparent 14%),
+    radial-gradient(circle at 50% 50%, transparent 0 32%, rgba(79,195,247,.18) 33% 35%, transparent 36%),
+    linear-gradient(135deg, var(--sky-soft), #ffffff) !important;
+}
+
+.player-cover::after {
+  content: "";
+  position: absolute;
+  inset: 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(79,195,247,.22);
+}
+
+.player-track {
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  color: var(--text) !important;
+}
+
+.player-sub {
+  margin-top: 4px;
+  color: var(--text-muted) !important;
+  font-size: 10px !important;
+}
+
+.player-progress {
+  height: 5px !important;
+  margin: 12px 0 5px !important;
+  border-radius: 999px;
+  background: rgba(255,255,255,.8) !important;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, var(--sky), var(--cicada)) !important;
+}
+
+.mp3-time {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: var(--text-muted);
+  font-size: 9px;
+}
+
+.mp3-pad {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ctrl-btn {
+  width: 32px !important;
+  height: 28px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--line-mid) !important;
+  background: rgba(255,255,255,.78) !important;
+  color: var(--sky) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.ctrl-main {
+  width: 42px !important;
+  height: 34px !important;
+  background: var(--sky) !important;
+  color: #fff !important;
+}
+
+.ctrl-btn:hover {
+  transform: translateY(-1px);
+}
+
+.vol-slider {
+  display: none !important;
+}
+
+/* ===================================================
+   MP3 player premium polish
+   - 카드 느낌 줄이고 실제 작은 기기 느낌
+   =================================================== */
+
+.playlist-card {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.real-mp3 {
+  padding: 12px !important;
+  border-radius: 18px !important;
+  border: 1px solid var(--line-mid) !important;
+  background:
+    radial-gradient(circle at 25% 8%, rgba(255,255,255,.9), transparent 18%),
+    linear-gradient(145deg, #ffffff 0%, #e9f8ff 58%, #dff6ff 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -8px 18px rgba(79,195,247,.08),
+    0 10px 24px rgba(2,119,189,.12) !important;
+}
+
+.real-mp3::before,
+.real-mp3::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(79,195,247,.35);
+}
+
+.real-mp3::before {
+  left: 10px;
+}
+
+.real-mp3::after {
+  right: 10px;
+}
+
+.mp3-brand {
+  margin: 2px 0 10px 12px !important;
+  color: var(--title) !important;
+  font-size: 9px !important;
+  letter-spacing: .18em !important;
+}
+
+/* 액정 */
+.mp3-display {
+  grid-template-columns: 58px 1fr !important;
+  gap: 10px !important;
+  min-height: 74px !important;
+  padding: 10px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(79,195,247,.32) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.9), rgba(247,253,255,.72)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.78),
+    inset 0 -10px 18px rgba(79,195,247,.05) !important;
+}
+
+.player-cover {
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 6px !important;
+  background:
+    radial-gradient(circle at 50% 50%, #ffffff 0 11%, transparent 12%),
+    radial-gradient(circle at 50% 50%, rgba(79,195,247,.18) 0 32%, transparent 33%),
+    linear-gradient(135deg, #eefaff, #ffffff) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(79,195,247,.28),
+    0 6px 12px rgba(2,119,189,.08) !important;
+}
+
+.player-cover::after {
+  inset: 9px !important;
+  border-color: rgba(79,195,247,.24) !important;
+}
+
+.player-track {
+  font-size: 11.5px !important;
+}
+
+.player-sub {
+  font-size: 9.5px !important;
+}
+
+/* 진행바 */
+.player-progress {
+  height: 4px !important;
+  margin: 10px 4px 5px !important;
+  background: rgba(255,255,255,.9) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(79,195,247,.18) !important;
+}
+
+.mp3-time {
+  padding: 0 4px !important;
+  font-size: 8.5px !important;
+}
+
+/* 조작부: mp3 원형 패드 느낌 */
+.mp3-pad {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: 32px 42px 32px;
+  justify-content: center;
+  align-items: center;
+  gap: 6px !important;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.mp3-pad::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 28px;
+  right: 28px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(79,195,247,.32), transparent);
+}
+
+.ctrl-btn {
+  border-radius: 999px !important;
+  border: 1px solid rgba(79,195,247,.45) !important;
+  background:
+    linear-gradient(180deg, #ffffff, #eefaff) !important;
+  color: var(--title) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    0 4px 10px rgba(2,119,189,.1) !important;
+}
+
+.ctrl-main {
+  width: 42px !important;
+  height: 42px !important;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.65), transparent 28%),
+    linear-gradient(135deg, var(--sky), var(--cicada)) !important;
+  color: #fff !important;
+  font-size: 13px !important;
+}
+
+.ctrl-btn:not(.ctrl-main) {
+  width: 30px !important;
+  height: 30px !important;
+  font-size: 12px !important;
+}
+
+/* 하단 스피커 구멍 */
+.real-mp3 .mp3-pad::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 10px;
+  width: 36px;
+  height: 4px;
+  background:
+    radial-gradient(circle, rgba(79,195,247,.45) 1px, transparent 1.5px);
+  background-size: 6px 4px;
+  opacity: .7;
+}
+
+/* ===================================================
+   Boarding ticket D-DAY + centered MP3 brand
+   =================================================== */
+
+/* MP3 상단 NATSU-MP3 가운데 정렬 */
+.mp3-brand {
+  margin: 0 0 10px !important;
+  text-align: center !important;
+  width: 100% !important;
+  letter-spacing: .18em !important;
+}
+
+/* D-DAY: boarding ticket style */
+.dday-card {
+  grid-template-columns: 42px 1fr !important;
+  min-height: 128px !important;
+  border-radius: 10px !important;
+  background:
+    linear-gradient(135deg, #ffffff 0%, var(--sky-soft) 48%, var(--sun-soft) 100%) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.68),
+    0 8px 18px rgba(2,119,189,.09) !important;
+}
+
+.ticket-side {
+  position: relative !important;
+  display: grid !important;
+  place-items: center !important;
+  border-right: 1px dashed rgba(79,195,247,.48) !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.76), rgba(225,245,254,.52)) !important;
+}
+
+.ticket-side::before,
+.ticket-side::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  width: 1px !important;
+  height: 18px !important;
+  background: rgba(79,195,247,.36) !important;
+  transform: translateX(-50%) !important;
+}
+
+.ticket-side::before {
+  top: 12px !important;
+}
+
+.ticket-side::after {
+  bottom: 12px !important;
+}
+
+.ticket-side span {
+  display: block !important;
+  writing-mode: vertical-rl !important;
+  transform: rotate(180deg) !important;
+  color: var(--sky) !important;
+  font-size: 8px !important;
+  font-weight: 900 !important;
+  letter-spacing: .18em !important;
+}
+
+.ticket-main {
+  grid-template-rows: 28px 1fr 24px !important;
+  background:
+    radial-gradient(circle at 86% 52%, rgba(255,183,77,.16) 0 15px, transparent 16px),
+    linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.28)) !important;
+}
+
+.ticket-head {
+  padding: 0 12px !important;
+  border-bottom: 1px dashed rgba(79,195,247,.42) !important;
+}
+
+.ticket-main::before,
+.ticket-main::after {
+  display: none !important;
+}
+
+.ticket-head span {
+  color: var(--text-muted) !important;
+  font-size: 8px !important;
+  font-weight: 900 !important;
+}
+
+.ticket-head i {
+  color: var(--sky) !important;
+  font-size: 8px !important;
+  font-weight: 900 !important;
+}
+
+.ticket-body {
+  position: relative !important;
+  padding: 6px 12px 4px !important;
+}
+
+.ticket-body::after {
+  content: "" !important;
+  position: absolute !important;
+  right: 13px !important;
+  top: 50% !important;
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid rgba(79,195,247,.22) !important;
+  border-radius: 999px !important;
+  transform: translateY(-50%) rotate(-10deg) !important;
+  opacity: .85 !important;
+}
+
+.ticket-body .card-label {
+  margin: 0 0 2px !important;
+  color: var(--sky) !important;
+  font-size: 9px !important;
+}
+
+.ticket-body .dday-num {
+  color: var(--sun) !important;
+  font-size: 34px !important;
+}
+
+.ticket-body .dday-sub {
+  margin-top: 3px !important;
+  color: var(--text-muted) !important;
+  font-size: 9px !important;
+}
+
+.ticket-foot {
+  padding: 0 12px !important;
+  border-top: 1px dashed rgba(79,195,247,.42) !important;
+  color: var(--text-muted) !important;
+}
+
+.ticket-foot::after {
+  display: none !important;
+}
+
+/* 양쪽 펀칭은 boarding ticket처럼 부드럽게 */
+.dday-card::before,
+.dday-card::after {
+  width: 16px !important;
+  height: 16px !important;
+  border: 1px solid rgba(79,195,247,.35) !important;
+  background: var(--page) !important;
+}
+
+.dday-card::before {
+  left: -8px !important;
+}
+
+.dday-card::after {
+  right: -8px !important;
+}
+
+/* ===================================================
+   D-DAY boarding pass layout patch
+   layout only, keep current sky palette
+   =================================================== */
+
+.dday-card {
+  display: block !important;
+  min-height: 154px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+}
+
+/* 기존 좌측 세로 티켓 제거 */
+.ticket-side {
+  display: none !important;
+}
+
+/* 양쪽 펀칭 */
+.dday-card::before,
+.dday-card::after {
+  top: 56% !important;
+  width: 16px !important;
+  height: 16px !important;
+  border: 1px solid rgba(79,195,247,.35) !important;
+  background: var(--page) !important;
+  z-index: 10 !important;
+}
+
+.dday-card::before {
+  left: -8px !important;
+}
+
+.dday-card::after {
+  right: -8px !important;
+}
+
+/* 보딩패스 본문 */
+.ticket-main {
+  display: grid !important;
+  grid-template-rows: 26px 54px 36px 28px !important;
+  width: 100% !important;
+  height: 154px !important;
+  background:
+    linear-gradient(180deg, #fff 0%, #fff 100%) !important;
+}
+
+/* 상단 boarding pass 라인 */
+.ticket-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 12px !important;
+  background: var(--sky-soft) !important;
+  border: 0 !important;
+  color: var(--sky) !important;
+}
+
+.ticket-head span {
+  color: var(--sky) !important;
+  font-size: 8px !important;
+  font-weight: 900 !important;
+  letter-spacing: .14em !important;
+}
+
+.ticket-head i {
+  color: var(--text-muted) !important;
+  font-size: 8px !important;
+  font-style: normal !important;
+}
+
+/* 중앙 큰 정보 영역 */
+.ticket-body {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 7px 12px 6px !important;
+  background: linear-gradient(90deg, var(--sky), var(--cicada)) !important;
+  color: #fff !important;
+  text-align: left !important;
+}
+
+.ticket-body .card-label {
+  margin: 0 !important;
+  color: rgba(255,255,255,.85) !important;
+  font-size: 8px !important;
+  letter-spacing: .13em !important;
+}
+
+.ticket-body .dday-num {
+  margin: 0 !important;
+  color: #fff !important;
+  font-size: 31px !important;
+  line-height: 1 !important;
+  text-shadow: none !important;
+}
+
+.ticket-body .dday-sub {
+  grid-column: 1 / -1 !important;
+  margin: -2px 0 0 !important;
+  color: rgba(255,255,255,.78) !important;
+  font-size: 8.5px !important;
+}
+
+/* 원형 도장 제거 */
+.ticket-body::after {
+  display: none !important;
+}
+
+/* 하단 작은 정보 */
+.ticket-foot {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 6px 12px !important;
+  border: 0 !important;
+  background: #fff !important;
+  color: var(--text-sub) !important;
+}
+
+.ticket-foot span {
+  position: relative;
+  display: block;
+  font-size: 8px !important;
+  font-weight: 800 !important;
+  letter-spacing: .08em !important;
+}
+
+.ticket-foot span:nth-child(1)::before {
+  content: "GATE";
+  display: block;
+  color: var(--text-muted);
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.ticket-foot span:nth-child(2)::before {
+  content: "SEAT";
+  display: block;
+  color: var(--text-muted);
+  font-size: 7px;
+  font-weight: 700;
+}
+
+/* 바코드 느낌 */
+.ticket-main::after {
+  content: "" !important;
+  display: block !important;
+  height: 28px !important;
+  margin: 0 12px 8px !important;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--text) 0 2px,
+      transparent 2px 4px,
+      var(--text) 4px 5px,
+      transparent 5px 8px
+    ) !important;
+  opacity: .45 !important;
+}
+
+/* 기존 점선 제거 */
+.ticket-main::before {
+  display: none !important;
+}
+
+/* ===================================================
+   Boarding ticket clean rectangle patch
+   - 곡선/반달 구멍 제거
+   - 바코드 굵게 + 아래로
+   - D-day 숫자 폰트 정리
+   =================================================== */
+
+/* 반달 구멍 제거 */
+.dday-card::before,
+.dday-card::after {
+  display: none !important;
+}
+
+.dday-card {
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  min-height: 168px !important;
+  background: #fff !important;
+}
+
+/* 전체 높이 재정렬 */
+.ticket-main {
+  grid-template-rows: 28px 58px 34px 48px !important;
+  height: 168px !important;
+}
+
+/* 상단 */
+.ticket-head {
+  padding: 0 12px !important;
+}
+
+/* 중앙 숫자 영역 */
+.ticket-body {
+  padding: 6px 12px 5px !important;
+  text-align: center !important;
+}
+
+.ticket-body .card-label {
+  font-size: 8px !important;
+  font-weight: 900 !important;
+}
+
+.ticket-body .dday-num {
+  font-family: "Arial Rounded MT Bold", "Avenir Next", "Trebuchet MS", system-ui, sans-serif !important;
+  font-size: 32px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+}
+
+.ticket-body .dday-sub {
+  margin-top: 2px !important;
+  font-size: 8px !important;
+}
+
+/* GATE / SEAT 영역 */
+.ticket-foot {
+  padding: 6px 12px 4px !important;
+  align-items: start !important;
+}
+
+.ticket-foot span {
+  font-size: 8px !important;
+}
+
+/* 바코드 더 굵게 + 아래로 */
+.ticket-main::after {
+  height: 34px !important;
+  margin: 6px 20px 10px !important;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--text) 0 3px,
+      transparent 3px 5px,
+      var(--text) 5px 7px,
+      transparent 7px 10px,
+      var(--text) 10px 11px,
+      transparent 11px 14px
+    ) !important;
+  opacity: .55 !important;
+}
+
+/* 카드 내부 여백 문제 방지 */
+.dday-card .ticket-stub {
+  display: none !important;
+}
+
+/* ===================================================
+   Boarding ticket alignment cleanup
+   - 위로 쏠림 수정
+   - GATE/SEAT와 barcode 겹침 제거
+   - 전체 영역 분리
+   =================================================== */
+
+.dday-card {
+  min-height: 176px !important;
+  border-radius: 6px !important;
+  background: #fff !important;
+}
+
+/* 4개 영역 정확히 분리 */
+.ticket-main {
+  display: grid !important;
+  grid-template-rows: 28px 58px 32px 58px !important;
+  height: 176px !important;
+}
+
+/* 상단 */
+.ticket-head {
+  height: 28px !important;
+  padding: 0 12px !important;
+}
+
+/* 중앙 D-day */
+.ticket-body {
+  height: 58px !important;
+  display: grid !important;
+  place-items: center !important;
+  align-content: center !important;
+  padding: 4px 12px !important;
+}
+
+.ticket-body .card-label {
+  margin: 0 0 2px !important;
+}
+
+.ticket-body .dday-num {
+  margin: 0 !important;
+  font-size: 31px !important;
+  line-height: 0.95 !important;
+}
+
+.ticket-body .dday-sub {
+  margin: 3px 0 0 !important;
+  line-height: 1 !important;
+}
+
+/* GATE / SEAT를 바코드와 분리 */
+.ticket-foot {
+  height: 32px !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr !important;
+  align-items: center !important;
+  padding: 4px 14px 2px !important;
+  background: #fff !important;
+}
+
+.ticket-foot span {
+  display: block !important;
+  line-height: 1.1 !important;
+  font-size: 8px !important;
+}
+
+/* 바코드 하단 독립 영역 */
+.ticket-main::after {
+  align-self: start !important;
+  height: 34px !important;
+  margin: 8px 28px 12px !important;
+  opacity: .52 !important;
+}
+
+/* 혹시 남아있는 absolute 장식 제거 */
+.ticket-foot::after,
+.ticket-body::after,
+.ticket-main::before {
+  display: none !important;
+}
+
+/* barcode down + dotted divider between ticket info and barcode */
+
+.ticket-foot {
+  position: relative !important;
+  border-bottom: 1px dashed rgba(79,195,247,.42) !important;
+  padding-bottom: 5px !important;
+}
+
+.ticket-main::after {
+  margin-top: 14px !important;
+  margin-bottom: 8px !important;
+  height: 32px !important;
+}
+
+/* D-day number center + compact margins */
+
+.ticket-body {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  gap: 1px !important;
+  padding: 3px 10px !important;
+}
+
+.ticket-body .dday-num {
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 31px !important;
+  line-height: 0.95 !important;
+  letter-spacing: -0.06em !important;
+}
+
+.ticket-body .dday-sub {
+  margin: 0 !important;
+}
+
+.ticket-foot {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+  height: 26px !important;
+}
+
+.ticket-main {
+  grid-template-rows: 26px 58px 26px 52px !important;
+  height: 162px !important;
+}
+
+.dday-card {
+  min-height: 162px !important;
+}
+
+.ticket-main::after {
+  margin-top: 8px !important;
+}
